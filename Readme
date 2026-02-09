@@ -1,0 +1,249 @@
+# Trading Portfolio Service
+
+A simple Node.js backend service to manage trades, portfolio holdings, and PnL
+(realized & unrealized) for crypto assets.
+
+## 🚀 Features
+
+- Register supported trading symbols with prices
+- Record buy/sell trades
+- View portfolio holdings
+- Calculate realized and unrealized PnL
+- In-memory storage (no database)
+- Single user
+- Swagger UI for API documentation
+
+PnL calculation uses **Average Cost**.
+
+---
+
+## 🧱 Tech Stack
+
+- Node.js
+- Express
+- Swagger (OpenAPI 3.0)
+- Docker
+
+---
+
+## 📂 Project Structure
+
+trading-service/
+│
+├── src/
+│   ├── app.js
+│   ├── routes.js
+│   ├── tradeService.js
+│
+├── tests/
+│   ├── symbols.test.js
+│   ├── trade.test.js
+│   ├── portfolio.test.js
+│   └── pnl.test.js
+│
+├── package.json
+├── Dockerfile
+├── Makefile
+├── swagger.yaml
+└── README.md
+
+
+## 🧪 API Overview
+
+Base URL:
+    http://localhost:3000/api
+
+Swagger UI:
+    http://localhost:3000/swagger
+
+
+## 1. Register Supported Symbols
+
+### POST `/symbols`
+
+Registers or updates supported trading symbols and their prices.
+Trades are allowed **only** for symbols registered here.
+
+#### Request
+```json
+{
+  "BTC": 44000,
+  "ETH": 2000,
+  "SOL": 120
+}
+```
+
+#### Response
+```json
+{
+  "message": "Symbols added/updated successfully"
+}
+```
+
+## 2. Get Supported Symbols
+
+### GET `/symbols`
+
+Returns all supported symbols with their current prices.
+
+
+#### Response
+```json
+{
+  "BTC": 44000,
+  "ETH": 2000,
+  "SOL": 120
+}
+```
+
+## 3. Add Trade
+
+### POST `/trade`
+
+Records a buy or sell trade for a supported symbol.
+
+#### Request
+```json
+{
+  "id": "1",
+  "symbol": "BTC",
+  "side": "buy",
+  "price": 40000,
+  "quantity": 1
+}
+```
+
+#### Response
+```json
+{
+  "message": "Trade added successfully"
+}
+```
+
+## 4. Get Portfolio
+
+### POST `/portfolio`
+
+Returns current holdings per symbol.
+
+#### Response
+```json
+[
+  {
+    "symbol": "BTC",
+    "quantity": 1,
+    "avgEntryPrice": 40000,
+    "marketPrice": 44000,
+    "unrealizedPnL": 4000
+  }
+]
+```
+
+## 4. Get PnL
+
+### POST `/pnl`
+
+Returns realized and unrealized PnL.
+
+#### Response
+```json
+{
+  "realizedPnL": 2000,
+  "unrealizedPnL": 3000,
+  "totalPnL": 5000
+}
+```
+
+#### 🧠 PnL Logic
+
+Average Cost Method
+
+Realized PnL is calculated on sell
+
+Unrealized PnL uses the latest price from /symbols
+
+
+#### Running with Docker
+- Build the image
+
+``` make build ```
+
+- Start the service
+
+``` make start ```
+
+- Stop the service
+
+``` make stop ```
+
+- Service runs on 
+
+``` http://localhost:3000 ```
+
+
+#### Running locally
+
+``` npm start ```
+
+
+
+#### 🧪 Testing
+🔍 What is Covered
+
+Unit tests cover all critical business flows:
+
+#### 1️⃣ Symbol Management
+
+- Add supported symbols
+- Reject duplicate symbols
+- Validate price input
+
+#### 2️⃣ Trade API
+
+- Add buy trades
+- Add sell trades
+- Reject invalid trades:
+    - Unsupported symbol
+    - Negative price or quantity
+    - Selling more than holdings
+
+#### 3️⃣ Portfolio Calculation
+
+- Correct quantity per symbol
+- Correct average entry price
+- Multiple symbols handled independently
+
+#### 4️⃣ PnL Calculation
+
+- Realized PnL after sell trades
+- Unrealized PnL using latest prices
+- Mixed buy/sell flows
+- Edge cases:
+    - No trades
+    - Only buys
+    - Full position exit
+
+#### 🧪 Test Structure
+    tests/
+    ├── symbols.test.js     # Symbol registration tests
+    ├── trade.test.js       # Trade add & validation tests
+    ├── portfolio.test.js   # Portfolio calculations
+    └── pnl.test.js         # Realized & Unrealized PnL tests
+
+#### ▶️ Running Tests
+``` Install dependencies ```
+- npm install
+
+``` Run all tests ```
+- npm test
+
+``` Run tests in watch mode ```
+- npm run test:watch
+
+``` Sample Output ```
+    PASS  tests/trade.test.js
+    PASS  tests/portfolio.test.js
+    PASS  tests/pnl.test.js
+
+    Test Suites: 4 passed, 4 total
+    Tests:       22 passed, 22 total

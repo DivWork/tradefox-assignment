@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: Trading Portfolio Service
+  description: |
+    A simple backend service to:
+    - Register supported trading symbols with prices
+    - Record trades (buy/sell)
+    - View portfolio holdings
+    - Calculate realized and unrealized PnL
+
+    Notes:
+    - Single user
+    - In-memory storage
+    - PnL calculation uses Average Cost
+  version: 1.1.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /symbols:
+    post:
+      summary: Add or update supported symbols
+      description: |
+        Registers supported trading symbols with their latest prices.
+        Trades are allowed only for symbols added here.
+      operationId: addSymbols
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SymbolsRequest"
+            example:
+              BTC: 44000
+              ETH: 2000
+              SOL: 120
+      responses:
+        "200":
+          description: Symbols added or updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid symbols payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      summary: Get supported symbols
+      description: Returns all supported symbols with their current prices.
+      operationId: getSymbols
+      responses:
+        "200":
+          description: List of supported symbols
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SymbolsResponse"
+
+  /trade:
+    post:
+      summary: Add a trade
+      description: |
+        Records a buy or sell trade.
+        The symbol must be registered via the /symbols endpoint.
+      operationId: addTrade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TradeRequest"
+            example:
+              id: "1"
+              symbol: "BTC"
+              side: "buy"
+              price: 40000
+              quantity: 1
+      responses:
+        "200":
+          description: Trade added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid trade data or unsupported symbol
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /portfolio:
+    get:
+      summary: Get portfolio
+      description: Returns current holdings for each symbol.
+      operationId: getPortfolio
+      responses:
+        "200":
+          description: Portfolio positions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioPosition"
+
+  /pnl:
+    get:
+      summary: Get PnL
+      description: |
+        Returns realized and unrealized profit and loss.
+        Unrealized PnL is based on prices from registered symbols.
+      operationId: getPnL
+      responses:
+        "200":
+          description: PnL summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PnLResponse"
+
+# components:
+#   schemas:
+#     SymbolsRequest:
+#       type: object
+#       additionalProperties:
+#         type: number
+#         example: 44000
+#       description: |
+#         Key-value map of symbol to price.
+#         Example: { "BTC": 44000, "ETH": 2000 }
+
+#     SymbolsResponse:
+#       type: object
+#       additionalProperties:
+#         type: number
+#         example: 2000
+
+#     TradeRequest:
+#       type: object
+#       required:
+#         - id
+#         - symbol
+#         - side
+#         - price
+#         - quantity
+#       properties:
+#         id:
+#           type: string
+#           description: Client-provided trade identifier
+#         symbol:
+#           type: string
+#           example: BTC
+#         side:
+#           type: string
+#           enum: [buy, sell]
+#         price:
+#           type: number
+#           format: float
+#           example: 40000
+#         quantity:
+#           type: number
+#           format: float
+#           example: 1
+#         timestamp:
+#           type: integer
+#           description: Epoch timestamp (optional)
+#           example: 1700000000000
+
+#     PortfolioPosition:
+#       type: object
+#       properties:
+#         symbol:
+#           type: string
+#           example: BTC
+#         quantity:
+#           type: number
+#           example: 1
+#         avgEntryPrice:
+#           type: number
+#           example: 41000
+#         marketPrice:
+#           type: number
+#           example: 44000
+#         unrealizedPnL:
+#           type: number
+#           example: 3000
+
+#     PnLResponse:
+#       type: object
+#       properties:
+#         realizedPnL:
+#           type: number
+#           example: 2000
+#         unrealizedPnL:
+#           type: number
+#           example: 3000
+#         totalPnL:
+#           type: number
+#           example: 5000
+
+#     SuccessResponse:
+#       type: object
+#       properties:
+#         message:
+#           type: string
+#           example: Operation successful
+
+#     ErrorResponse:
+#       type: object
+#       properties:
+#         error:
+#           type: string
+#           example: Invalid request

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>TradeFox – Trading Portfolio Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #0f172a;
+            background: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: #020617;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #020617;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #7dd3fc;
+            font-size: 14px;
+        }
+
+        .endpoint {
+            background: #e5e7eb;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .endpoint span {
+            font-weight: bold;
+            color: #7dd3fc;
+        }
+
+        .cta {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta a {
+            display: inline-block;
+            background: #38bdf8;
+            color: #e5e7eb;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 8px;
+            margin: 10px;
+            transition: transform 0.15s ease, background 0.15s ease;
+        }
+
+        .cta a:hover {
+            background: #0ea5e9;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #e5e7eb;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>📈 Portfolio Trading API </h1>
+        <p>Trading Portfolio & PnL Backend Service (Node.js)</p>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>🚀 What is Portfolio Trading API?</h2>
+            <p>
+                Portfolio Trading API is a simple backend service that allows you to record crypto trades,
+                track portfolio holdings, and calculate realized and unrealized profit & loss.
+            </p>
+            <p>
+                It is designed as a <strong>single-user, in-memory service</strong> with a strong
+                focus on correctness and clarity.
+            </p>
+        </section>
+
+        <section>
+            <h2>✨ Key Features</h2>
+            <ul>
+                <li>Register supported trading symbols (BTC, ETH, SOL, etc.)</li>
+                <li>Record buy and sell trades</li>
+                <li>View portfolio holdings with average entry price</li>
+                <li>Calculate realized and unrealized PnL</li>
+                <li>Swagger-based API documentation</li>
+                <li>Dockerized for easy local execution</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🧠 PnL Calculation Logic</h2>
+            <ul>
+                <li>Uses <strong>Average Cost</strong> method</li>
+                <li>Realized PnL is calculated when positions are sold</li>
+                <li>Unrealized PnL is calculated using latest prices from registered symbols</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🧪 API Overview</h2>
+
+            <div class="endpoint">
+                <span>POST</span> <code>/api/symbols</code> – Register or update supported symbols
+            </div>
+
+            <div class="endpoint">
+                <span>GET</span> <code>/api/symbols</code> – Get supported symbols and prices
+            </div>
+
+            <div class="endpoint">
+                <span>POST</span> <code>/api/trade</code> – Record a buy or sell trade
+            </div>
+
+            <div class="endpoint">
+                <span>GET</span> <code>/api/portfolio</code> – View current holdings
+            </div>
+
+            <div class="endpoint">
+                <span>GET</span> <code>/api/pnl</code> – View realized and unrealized PnL
+            </div>
+        </section>
+
+        <section>
+            <h2>▶️ Running the Service</h2>
+            <ul>
+                <li><strong>Local:</strong> <code>npm install</code> → <code>npm start</code></li>
+                <li><strong>Docker:</strong> <code>make build</code> → <code>make start</code></li>
+                <li>Service runs on <code>http://localhost:3000</code></li>
+            </ul>
+        </section>
+
+        <div class="cta">
+            <a href="/docs" target="_blank">📘 Open Swagger API Docs</a>
+        </div>
+
+    </main>
+
+    <footer>
+        TradeFox · Node.js · Express · Swagger · In-Memory · Single User
+    </footer>
+
+</body>
+
+</html>

@@ -182,7 +182,7 @@ Unrealized PnL uses the latest price from /symbols
 
 
 #### Running locally
-
+``` npm install ```
 ``` npm start ```
 
 

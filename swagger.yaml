@@ -31,7 +31,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SymbolsRequest"
+              type: object
+              additionalProperties:
+                type: number
+              description: Key-value map of symbol to price.
             example:
               BTC: 44000
               ETH: 2000
@@ -42,13 +45,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SuccessResponse"
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
         "400":
           description: Invalid symbols payload
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request
 
     get:
       summary: Get supported symbols
@@ -60,7 +71,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SymbolsResponse"
+                type: object
+                additionalProperties:
+                  type: number
 
   /trade:
     post:
@@ -74,7 +87,35 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TradeRequest"
+              type: object
+              required:
+                - id
+                - symbol
+                - side
+                - price
+                - quantity
+              properties:
+                id:
+                  type: string
+                  description: Client-provided trade identifier
+                symbol:
+                  type: string
+                  example: BTC
+                side:
+                  type: string
+                  enum: [buy, sell]
+                price:
+                  type: number
+                  format: float
+                  example: 40000
+                quantity:
+                  type: number
+                  format: float
+                  example: 1
+                timestamp:
+                  type: integer
+                  description: Epoch timestamp (optional)
+                  example: 1700000000000
             example:
               id: "1"
               symbol: "BTC"
@@ -87,13 +128,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SuccessResponse"
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Operation successful
         "400":
           description: Invalid trade data or unsupported symbol
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request
 
   /portfolio:
     get:
@@ -108,7 +157,23 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PortfolioPosition"
+                  type: object
+                  properties:
+                    symbol:
+                      type: string
+                      example: BTC
+                    quantity:
+                      type: number
+                      example: 1
+                    avgEntryPrice:
+                      type: number
+                      example: 41000
+                    marketPrice:
+                      type: number
+                      example: 44000
+                    unrealizedPnL:
+                      type: number
+                      example: 3000
 
   /pnl:
     get:
@@ -123,7 +188,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PnLResponse"
+                type: object
+                properties:
+                  realizedPnL:
+                    type: number
+                    example: 2000
+                  unrealizedPnL:
+                    type: number
+                    example: 3000
+                  totalPnL:
+                    type: number
+                    example: 5000
 
 # components:
 #   schemas:
